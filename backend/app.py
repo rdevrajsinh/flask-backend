@@ -13,12 +13,12 @@ app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
 
 # Configure the database URI
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")  # Set the database URI for SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("POSTGRES_URL")  # Set the database URI for SQLAlchemy
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable Flask-SQLAlchemy modifications tracking
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))
+print("DATABASE_URL:", os.getenv("POSTGRES_URL"))
 # Configure session to store data in PostgreSQL
 app.config['SESSION_TYPE'] = 'sqlalchemy'
-app.config['SESSION_SQLALCHEMY'] = os.getenv("DATABASE_URL")  # Using the same DATABASE_URL for session storage
+app.config['SESSION_SQLALCHEMY'] = os.getenv("POSTGRES_URL")  # Using the same DATABASE_URL for session storage
 app.config['SESSION_PERMANENT'] = False  # Session lasts until the browser is closed
 app.config['SESSION_COOKIE_NAME'] = 'my_session_cookie'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Set this in your .env file
