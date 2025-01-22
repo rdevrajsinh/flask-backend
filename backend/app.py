@@ -189,7 +189,7 @@ def get_all_domains():
             'updated_date': domain[4],
             'organization': domain[5],
             'server_name': domain[6],
-            'custom_option': domain[9],
+            'custom_option': domain[7],
             'is_active': domain[8]
         })
 
