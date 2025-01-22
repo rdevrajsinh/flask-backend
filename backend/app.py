@@ -7,6 +7,7 @@ import requests
 from dateutil import parser
 from datetime import datetime
 import logging
+from urllib.parse import urlparse
 
 # Load environment variables
 load_dotenv()
