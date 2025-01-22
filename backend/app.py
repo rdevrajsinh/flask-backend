@@ -12,15 +12,15 @@ app = Flask(__name__)
 
 # Enable CORS for your frontend app
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
-print(os.getenv("DATABASE_URL"))
+
 # Configure session to store data in PostgreSQL
 app.config['SESSION_TYPE'] = 'sqlalchemy'
-app.config['SESSION_SQLALCHEMY'] = os.getenv("DATABASE_URL")  # Using the same DATABASE_URL for session storage
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")  # Set the database URI for SQLAlchemy
+app.config['SESSION_SQLALCHEMY'] = os.getenv("POSTGRES_URL")  # Using the POSTGRES_URL for session storage
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("POSTGRES_URL")  # Set the database URI for SQLAlchemy
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable Flask-SQLAlchemy modifications tracking
 app.config['SESSION_PERMANENT'] = False  # Session lasts until the browser is closed
 app.config['SESSION_COOKIE_NAME'] = 'my_session_cookie'
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Set this in your .env file
+app.config['SECRET_KEY'] = os.getenv('SUPABASE_JWT_SECRET')  # Use a secure secret key
 Session(app)  # Initialize session management
 
 # WHOIS API details
@@ -29,7 +29,7 @@ WHOIS_API_KEY = os.getenv("WHOIS_API_KEY")
 
 # Database connection
 def get_db_connection():
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    conn = psycopg2.connect(os.getenv("POSTGRES_URL"))
     return conn
 
 # Get session data from the database
@@ -99,7 +99,7 @@ def check_session():
     if session_id:
         session_data = get_session(session_id)  # Get session data from the database
         if session_data and 'username' in session_data:
-            return jsonify({"message": f"User {session_data['username']} is authenticated"}), 200
+            return jsonify({"message": f"User  {session_data['username']} is authenticated"}), 200
     return jsonify({"error": "Unauthorized access"}), 403
 
 # Route to get all domains (protected)
