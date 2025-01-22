@@ -25,7 +25,20 @@ WHOIS_API_KEY = os.getenv("WHOIS_API_KEY")
 
 # Database connection setup
 def get_db_connection():
-    conn = psycopg2.connect(os.getenv("POSTGRES_URL"))  # Use Supabase Postgres URL
+    database_url = os.getenv("POSTGRES_URL")
+
+    # Parse the URL to extract components
+    parsed_url = urlparse(database_url)
+
+    # Build the connection string without the query parameters
+    conn = psycopg2.connect(
+        host=parsed_url.hostname,
+        port=parsed_url.port,
+        database=parsed_url.path[1:],  # Remove leading '/'
+        user=parsed_url.username,
+        password=parsed_url.password,
+        sslmode='require'
+    )
     return conn
 
 # Create users table
