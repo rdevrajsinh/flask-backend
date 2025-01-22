@@ -243,13 +243,13 @@ def add_domain():
             print("""
             INSERT INTO domains (domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers_str, custom_option, is_active))
+            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers, custom_option, is_active))
 
             cursor.execute("""
             INSERT INTO domains (domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id;
-            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers_str, custom_option, is_active))
+            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers, custom_option, is_active))
             domain_id = cursor.fetchone()[0]
             conn.commit()
             cursor.close()
