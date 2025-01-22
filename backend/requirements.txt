@@ -4,4 +4,5 @@ Flask-Session
 Flask-SQLAlchemy
 psycopg2-binary
 python-dateutil
+python-dotenv
 requests
