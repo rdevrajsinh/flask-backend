@@ -198,13 +198,14 @@ def get_all_domains():
     return jsonify(domains_list)
 
 # CRUD Operations for domains (add domain, update, delete)
+@app.route('/api/domain', methods=['POST'])
 def add_domain():
-    if 'username' not in session:  # Check if user is authenticated
+    if 'username' not in session:
         return jsonify({"error": "Unauthorized access, please login"}), 403
 
     data = request.get_json()
     domain_name = data.get('domain_name')
-    custom_option = data.get('custom_option') 
+    custom_option = data.get('custom_option')
 
     if not domain_name or not custom_option:
         return jsonify({"error": "Domain name and custom option are required"}), 400
@@ -224,27 +225,28 @@ def add_domain():
             updated_date = whois_record.get("updatedDate")
             organization = whois_record.get("registrant", {}).get("organization", "N/A")
             name_servers = whois_record.get("nameServers", {}).get("hostNames", [])
+            name_servers_str = ", ".join(name_servers) if name_servers else "N/A"
             is_active = False
 
-            # Convert name_servers list to a string (comma-separated)
-            name_servers_str = ", ".join(name_servers) if name_servers else "N/A"
+            # Reformat dates
+            expiry_date = parser.parse(expiry_date).strftime('%Y-%m-%d %H:%M:%S') if expiry_date else None
+            created_date = parser.parse(created_date).strftime('%Y-%m-%d %H:%M:%S') if created_date else None
+            updated_date = parser.parse(updated_date).strftime('%Y-%m-%d %H:%M:%S') if updated_date else None
 
             if expiry_date:
                 expiry_date_obj = parser.parse(expiry_date).date()
                 today_date = datetime.utcnow().date()
                 is_active = expiry_date_obj > today_date
 
-            # Use None for missing values
-            expiry_date = parser.parse(expiry_date).isoformat() if expiry_date else None
-            created_date = parser.parse(created_date).isoformat() if created_date else None
-            updated_date = parser.parse(updated_date).isoformat() if updated_date else None
-
             conn = get_db_connection()
             cursor = conn.cursor()
+            print("""
+            INSERT INTO domains (domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers_str, custom_option, is_active))
+
             cursor.execute("""
-            INSERT INTO domains (
-                domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active
-            )
+            INSERT INTO domains (domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id;
             """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers_str, custom_option, is_active))
@@ -259,7 +261,7 @@ def add_domain():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+        
 # Other routes (update, delete, etc.) should also include the session check
 @app.route('/api/domain/<string:domain_name>', methods=['PUT'])
 def update_custom_option_by_name(domain_name):
