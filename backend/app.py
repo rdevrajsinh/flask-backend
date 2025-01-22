@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 # Enable CORS for your frontend app
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
-
+print(os.getenv("DATABASE_URL"))
 # Configure session to store data in PostgreSQL
 app.config['SESSION_TYPE'] = 'sqlalchemy'
 app.config['SESSION_SQLALCHEMY'] = os.getenv("DATABASE_URL")  # Using the same DATABASE_URL for session storage
