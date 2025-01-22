@@ -3,6 +3,5 @@ Flask-Cors
 Flask-Session
 Flask-SQLAlchemy
 psycopg2-binary
-psycopg2
 python-dateutil
 requests
