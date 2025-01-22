@@ -18,7 +18,7 @@ CORS(app, resources={r"/api/*": {"origins": "*", "supports_credentials": True}})
 # Configure session
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Set this in your .env file
 app.config['SESSION_COOKIE_NAME'] = 'my_session_cookie'
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production
+app.config['SESSION_COOKIE_SECURE'] = True  # Set to True in production
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Adjust as needed
 
 WHOIS_API_URL = os.getenv("WHOIS_API_URL")
