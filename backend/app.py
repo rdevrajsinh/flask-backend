@@ -12,7 +12,7 @@ import logging
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
+CORS(app, resources={r"/api/*": {"origins": "*", "supports_credentials": True}})
 
 # Configure session
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Set this in your .env file
