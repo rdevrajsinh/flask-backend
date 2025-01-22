@@ -198,7 +198,6 @@ def get_all_domains():
     return jsonify(domains_list)
 
 # CRUD Operations for domains (add domain, update, delete)
-@app.route('/api/domain', methods=['POST'])
 def add_domain():
     if 'username' not in session:  # Check if user is authenticated
         return jsonify({"error": "Unauthorized access, please login"}), 403
@@ -227,18 +226,28 @@ def add_domain():
             name_servers = whois_record.get("nameServers", {}).get("hostNames", [])
             is_active = False
 
+            # Convert name_servers list to a string (comma-separated)
+            name_servers_str = ", ".join(name_servers) if name_servers else "N/A"
+
             if expiry_date:
                 expiry_date_obj = parser.parse(expiry_date).date()
                 today_date = datetime.utcnow().date()
                 is_active = expiry_date_obj > today_date
 
+            # Use None for missing values
+            expiry_date = parser.parse(expiry_date).isoformat() if expiry_date else None
+            created_date = parser.parse(created_date).isoformat() if created_date else None
+            updated_date = parser.parse(updated_date).isoformat() if updated_date else None
+
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute("""
-            INSERT INTO domains (domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active)
+            INSERT INTO domains (
+                domain_name, expiry_date, created_date, updated_date, organization, server_name, custom_option, is_active
+            )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id;
-            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers, custom_option, is_active))
+            """, (domain_name, expiry_date, created_date, updated_date, organization, name_servers_str, custom_option, is_active))
             domain_id = cursor.fetchone()[0]
             conn.commit()
             cursor.close()
