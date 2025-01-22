@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Enable CORS for your frontend app
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
-
+print("POSTGRES_URL:", os.getenv("POSTGRES_URL"))
 # Configure the database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("POSTGRES_URL")  # Set the database URI for SQLAlchemy
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable Flask-SQLAlchemy modifications tracking
