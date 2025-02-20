@@ -81,7 +81,10 @@ def create_domains_table():
     conn.close()
 
 logging.basicConfig(level=logging.ERROR)
-
+@app.route("/")
+def home():
+    print("🚀 Flask is running!")
+    return "Flask is live on Vercel!"
 # Login user route
 @app.route('/api/login', methods=['POST'])
 def login_user():
